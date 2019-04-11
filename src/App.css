@@ -1,0 +1,42 @@
+* {
+  padding: 0.5rem;
+}
+
+body {
+  font-family: 'Verdana', sans-serif;
+  width: 80%;
+  margin: auto;
+  padding : auto;
+}
+
+h1 {text-align: center}
+
+.container {
+  padding: 1em;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 1rem;
+}
+
+.grid > div:nth-child(odd) {
+  background: #ededed;
+}
+
+.grid > div {
+  padding: 1em;
+}
+
+.formAddRecipe {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.gridRecipe {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  grid-gap: 1rem;
+  align-items: start;
+}
