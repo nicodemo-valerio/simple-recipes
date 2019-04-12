@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css'
 
-const SERVER = 'http://localhost:5000/recipes/';
+//const SERVER = 'http://localhost:5000/recipes/';
+const SERVER = 'https://nameless-temple-74743.herokuapp.com/recipes/';
 
 function RecipeForm({ addRecipe }) {
 
@@ -62,7 +63,7 @@ function Recipe({ recipe, index, updateRecipe, deleteRecipe }) {
         });
     };
 
-    const onClickEdit = (e, recipe) => {
+    const onClickEdit = recipe => {
         const updatedRecipe = recipe;
         updatedRecipe.isInEdit = !recipe.isInEdit;
         updateRecipe(updatedRecipe);
@@ -124,7 +125,7 @@ function Recipe({ recipe, index, updateRecipe, deleteRecipe }) {
         return <div key={index} className="gridRecipe">
             <div>
                 <h2>{recipe.recipe}</h2>
-                <button onClick={e => onClickEdit(e, recipe)}>Edit</button>
+                <button onClick={() => onClickEdit(recipe)}>Edit</button>
                 <button onClick={() => deleteRecipe(recipe)}>Delete</button>
             </div>
             <div>
