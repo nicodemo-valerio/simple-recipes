@@ -70,9 +70,9 @@ function Recipe({ recipe, index, updateRecipe, deleteRecipe }) {
     }
 
     const onClickDelete = (recipe) => {
-        if (window.confirm(`Do you really want to delete ${recipe.recipe}?`)) {
-            deleteRecipe(recipe);
-        }
+        /* if (window.confirm(`Do you really want to delete ${recipe.recipe}?`)) { */
+        deleteRecipe(recipe);
+        //}
     }
 
     const onChangeRecipe = e => {
@@ -164,6 +164,24 @@ function Recipe({ recipe, index, updateRecipe, deleteRecipe }) {
     )
 }
 
+function UploadRecipes({ uploadRecipes }) {
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+        console.log(`on submit ${e.target.number.value}`)
+        uploadRecipes(e.target.number.value);
+        e.target.number.value = '';
+    }
+
+    return (
+        <form onSubmit={(e) => onSubmit(e)}>
+            <label htmlFor="number">Number of recipes</label>
+            <input type="text" name="number" placeholder="Number of recipes to generate..." />
+            <input type="submit" value="Upload" />
+        </form>
+    )
+}
+
 function App() {
     const [recipes, setRecipes] = useState([]);
 
@@ -176,6 +194,7 @@ function App() {
         if (nameA > nameB) {
             return 1;
         }
+        console.log('equals');
         return 0;
     }
 
@@ -192,7 +211,7 @@ function App() {
     const addRecipe = (recipe) => {
         axios.post(SERVER, recipe)
             .then(res => {
-                setRecipes([...recipes, res.data].sort(sortByName));
+                setRecipes([...recipes, ...res.data].sort(sortByName));
             })
             .catch(err => console.log(err));
     }
@@ -216,10 +235,34 @@ function App() {
             .catch(err => console.log(err));
     }
 
+    const uploadRecipes = (number) => {
+        let i = 0;
+        const recipesToUpload = [];
+        for (i; i < number; i++) {
+            const newRecipe = {
+                recipe: `Another recipe n. ${i}`,
+                ingredients: [
+                    'ingredient 1',
+                    'ingredient 2',
+                    'ingredient 3'
+                ],
+                steps: [
+                    'step 1',
+                    'step 2',
+                    'step 3'
+                ],
+                isInEdit: false
+            }
+            recipesToUpload.push(newRecipe);
+        }
+        addRecipe(recipesToUpload);
+    }
+
     return (
         <div className="container">
             <h1>{recipes.length} simple recipes</h1>
             <RecipeForm addRecipe={addRecipe} />
+            <UploadRecipes uploadRecipes={uploadRecipes} />
             <div className="grid">
                 {recipes.map((recipe, index) => (
                     <Recipe
