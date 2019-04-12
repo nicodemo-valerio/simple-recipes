@@ -63,15 +63,9 @@ function Recipe({ recipe, index, updateRecipe, deleteRecipe }) {
     };
 
     const onClickEdit = (e, recipe) => {
-        e.preventDefault();
         const updatedRecipe = recipe;
         updatedRecipe.isInEdit = !recipe.isInEdit;
         updateRecipe(updatedRecipe);
-    }
-
-    const onClickDelete = (e, recipe) => {
-        e.preventDefault();
-        deleteRecipe(recipe);
     }
 
     const onChangeRecipe = e => {
@@ -92,7 +86,7 @@ function Recipe({ recipe, index, updateRecipe, deleteRecipe }) {
         updateRecipe(updatedRecipe);
     }
 
-    const displayUpdateForm = () => {
+    const recipeForm = () => {
         return <form key={index} onSubmit={handleSubmit} className="formAddRecipe">
             <div>
                 <label htmlFor="recipe">Recipe</label>
@@ -126,61 +120,63 @@ function Recipe({ recipe, index, updateRecipe, deleteRecipe }) {
         </form>
     }
 
-    const displayRecipe = () => {
+    const recipeView = () => {
         return <div key={index} className="gridRecipe">
             <div>
                 <h2>{recipe.recipe}</h2>
                 <button onClick={e => onClickEdit(e, recipe)}>Edit</button>
-                <button onClick={e => onClickDelete(e, recipe)}>Delete</button>
+                <button onClick={() => deleteRecipe(recipe)}>Delete</button>
             </div>
             <div>
                 <h3>Ingredients</h3>
                 <ul>
-                    {recipe.ingredients.map((ingredient, index) => <li key={index}>{ingredient}</li>)}
+                    {recipe.ingredients.map((ingredient, index) =>
+                        <li key={index}>{ingredient}</li>)}
                 </ul>
             </div>
             <div>
                 <h3>Steps</h3>
                 <ol>
-                    {recipe.steps.map((step, index) => <li key={index}>{step}</li>)}
+                    {recipe.steps.map((step, index) =>
+                        <li key={index}>{step}</li>)}
                 </ol>
             </div>
         </div>
     }
 
-    const display = () => {
+    const displayRecipes = () => {
         if (recipe.isInEdit) {
-            return displayUpdateForm();
+            return recipeForm();
         } else {
-            return displayRecipe();
+            return recipeView();
         }
     }
 
     return (
-        display()
+        displayRecipes()
     )
 }
 
 function App() {
     const [recipes, setRecipes] = useState([]);
 
+    const sortByName = (recipeA, recipeB) => {
+        const nameA = recipeA.recipe;
+        const nameB = recipeB.recipe;
+        if (nameA < nameB) {
+            return -1;
+        }
+        if (nameA > nameB) {
+            return 1;
+        }
+        return 0;
+    }
+
     // Fetch data once
     useEffect(() => {
         axios.get(SERVER)
             .then(res => {
-                const orderedRecipes = res.data;
-                orderedRecipes.sort((rA, rB) => {
-                    const nameA = rA.recipe;
-                    const nameB = rB.recipe;
-                    if (nameA < nameB) {
-                        return -1;
-                    }
-                    if (nameA > nameB) {
-                        return 1;
-                    }
-                    return 0;
-                });
-                setRecipes(orderedRecipes);
+                setRecipes(res.data.sort(sortByName));
             })
             .catch(err => console.log(err));
 
@@ -189,7 +185,7 @@ function App() {
     const addRecipe = (recipe) => {
         axios.post(SERVER, recipe)
             .then(res => {
-                setRecipes([...recipes, res.data]);
+                setRecipes([...recipes, res.data].sort(sortByName));
             })
             .catch(err => console.log(err));
     }
@@ -199,7 +195,7 @@ function App() {
             .then(res => {
                 const newRecipes = [...recipes].filter(element => recipe._id !== element._id);
                 newRecipes.unshift(res.data);
-                setRecipes(newRecipes);
+                setRecipes(newRecipes.sort(sortByName));
             })
             .catch(err => console.log(err));
     }
