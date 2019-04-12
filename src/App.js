@@ -174,23 +174,38 @@ function App() {
     }, 1);
 
     const addRecipe = (recipe) => {
-        const newRecipes = [...recipes, recipe];
-        setRecipes(newRecipes);
+        axios.post(SERVER, recipe)
+            .then(res => {
+                setRecipes([...recipes, res.data]);
+            })
+            .catch(err => console.log(err));
     }
 
     const updateRecipe = recipe => {
-        const newRecipes = [...recipes].filter(element => recipe._id !== element._id);
-        newRecipes.push(recipe);
-        setRecipes(newRecipes);
+        axios.put(`${SERVER}${recipe._id}`, recipe)
+            .then(res => {
+                const newRecipes = [...recipes].filter(element => recipe._id !== element._id);
+                newRecipes.unshift(res.data);
+                setRecipes(newRecipes);
+            })
+            .catch(err => console.log(err));
+        /* const newRecipes = [...recipes].filter(element => recipe._id !== element._id);
+        newRecipes.unshift(recipe);
+        setRecipes(newRecipes); */
     }
 
     const deleteRecipe = recipe => {
-        const newRecipes = [...recipes].filter(element => recipe._id !== element._id);
-        setRecipes(newRecipes);
+        axios.delete(`${SERVER}${recipe._id}`)
+            .then(res => {
+                const newRecipes = [...recipes].filter(element => recipe._id !== element._id);
+                setRecipes(newRecipes);
+            })
+            .catch(err => console.log(err));
     }
 
     return (
         <div className="container">
+            <h1>Simple recipes</h1>
             <RecipeForm addRecipe={addRecipe} />
             <div className="grid">
                 {recipes.map((recipe, index) => (

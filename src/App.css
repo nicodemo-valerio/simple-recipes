@@ -1,13 +1,13 @@
-* {
-  padding: 0.5rem;
-}
-
 body {
   font-family: 'Verdana', sans-serif;
   width: 80%;
   margin: auto;
   padding : auto;
 }
+
+button, label, form {padding: 1rem;}
+
+form {border: 1px solid lightgrey}
 
 h1 {text-align: center}
 
