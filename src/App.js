@@ -11,7 +11,8 @@ function RecipeForm({ addRecipe }) {
         addRecipe({
             recipe: e.target.recipe.value,
             ingredients: e.target.ingredients.value.split(','),
-            steps: e.target.steps.value.split(',')
+            steps: e.target.steps.value.split(','),
+            isInEdit: false
         });
         e.target.recipe.value = e.target.ingredients.value = e.target.steps.value = '';
     };
@@ -167,7 +168,19 @@ function App() {
     useEffect(() => {
         axios.get(SERVER)
             .then(res => {
-                setRecipes(res.data)
+                const orderedRecipes = res.data;
+                orderedRecipes.sort((rA, rB) => {
+                    const nameA = rA.recipe;
+                    const nameB = rB.recipe;
+                    if (nameA < nameB) {
+                        return -1;
+                    }
+                    if (nameA > nameB) {
+                        return 1;
+                    }
+                    return 0;
+                });
+                setRecipes(orderedRecipes);
             })
             .catch(err => console.log(err));
 
@@ -189,9 +202,6 @@ function App() {
                 setRecipes(newRecipes);
             })
             .catch(err => console.log(err));
-        /* const newRecipes = [...recipes].filter(element => recipe._id !== element._id);
-        newRecipes.unshift(recipe);
-        setRecipes(newRecipes); */
     }
 
     const deleteRecipe = recipe => {
