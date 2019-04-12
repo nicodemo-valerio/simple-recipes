@@ -13,6 +13,7 @@ function RecipeForm({ addRecipe }) {
             ingredients: e.target.ingredients.value.split(','),
             steps: e.target.steps.value.split(',')
         });
+        e.target.recipe.value = e.target.ingredients.value = e.target.steps.value = '';
     };
 
     return (
@@ -29,6 +30,7 @@ function RecipeForm({ addRecipe }) {
                 <input
                     type="text"
                     name="ingredients"
+                    placeholder="Separate with a comma..."
                     size="25" />
             </div>
             <div>
@@ -36,6 +38,7 @@ function RecipeForm({ addRecipe }) {
                 <input
                     type="text"
                     name="steps"
+                    placeholder="Separate with a comma..."
                     size="25" />
             </div>
             <div>
@@ -45,45 +48,113 @@ function RecipeForm({ addRecipe }) {
     )
 }
 
-function Recipe({ recipe, index, updateRecipe }) {
+function Recipe({ recipe, index, updateRecipe, deleteRecipe }) {
 
-    const editRecipe = (e, recipe) => {
+    const handleSubmit = e => {
         e.preventDefault();
-        console.log(recipe);
+        updateRecipe({
+            _id: recipe._id,
+            recipe: e.target.recipe.value,
+            ingredients: e.target.ingredients.value.split(','),
+            steps: e.target.steps.value.split(','),
+            isInEdit: false
+        });
+    };
+
+    const onClickEdit = (e, recipe) => {
+        e.preventDefault();
         const updatedRecipe = recipe;
         updatedRecipe.isInEdit = !recipe.isInEdit;
-        console.log(updatedRecipe);
-        updateRecipe(index, updatedRecipe);
+        updateRecipe(updatedRecipe);
+    }
+
+    const onClickDelete = (e, recipe) => {
+        e.preventDefault();
+        deleteRecipe(recipe);
+    }
+
+    const onChangeRecipe = e => {
+        const updatedRecipe = recipe;
+        updatedRecipe.recipe = e.target.value;
+        updateRecipe(updatedRecipe);
+    }
+
+    const onChangeIngredients = e => {
+        const updatedRecipe = recipe;
+        updatedRecipe.ingredients = e.target.value.split(',');
+        updateRecipe(updatedRecipe);
+    }
+
+    const onChangeSteps = e => {
+        const updatedRecipe = recipe;
+        updatedRecipe.steps = e.target.value.split(',');
+        updateRecipe(updatedRecipe);
+    }
+
+    const displayUpdateForm = () => {
+        return <form key={index} onSubmit={handleSubmit} className="formAddRecipe">
+            <div>
+                <label htmlFor="recipe">Recipe</label>
+                <input
+                    type="text"
+                    name="recipe"
+                    value={recipe.recipe}
+                    onChange={e => onChangeRecipe(e)} />
+            </div>
+            <div>
+                <label htmlFor="ingredients">Ingredients</label>
+                <input
+                    type="text"
+                    name="ingredients"
+                    value={recipe.ingredients}
+                    size="25"
+                    onChange={e => onChangeIngredients(e)} />
+            </div>
+            <div>
+                <label htmlFor="steps">Steps</label>
+                <input
+                    type="text"
+                    name="steps"
+                    value={recipe.steps}
+                    size="25"
+                    onChange={e => onChangeSteps(e)} />
+            </div>
+            <div>
+                <input type="submit" value="Update" />
+            </div>
+        </form>
+    }
+
+    const displayRecipe = () => {
+        return <div key={index} className="gridRecipe">
+            <div>
+                <h2>{recipe.recipe}</h2>
+                <button onClick={e => onClickEdit(e, recipe)}>Edit</button>
+                <button onClick={e => onClickDelete(e, recipe)}>Delete</button>
+            </div>
+            <div>
+                <h3>Ingredients</h3>
+                <ul>
+                    {recipe.ingredients.map((ingredient, index) => <li key={index}>{ingredient}</li>)}
+                </ul>
+            </div>
+            <div>
+                <h3>Steps</h3>
+                <ol>
+                    {recipe.steps.map((step, index) => <li key={index}>{step}</li>)}
+                </ol>
+            </div>
+        </div>
     }
 
     const display = () => {
-        console.log(recipe);
         if (recipe.isInEdit) {
-            return <div>{recipe.recipe}
-                <button onClick={e => editRecipe(e, recipe)}>Edit</button>
-            </div>
+            return displayUpdateForm();
         } else {
-            return <div key={index} className="gridRecipe">
-                <div>
-                    <h2>{recipe.recipe}</h2>
-                    <button onClick={e => editRecipe(e, recipe)}>Edit</button>
-                </div>
-                <div>
-                    <h3>Ingredients</h3>
-                    <ul>
-                        {recipe.ingredients.map((ingredient, index) => <li key={index}>{ingredient}</li>)}
-                    </ul>
-                </div>
-                <div>
-                    <h3>Steps</h3>
-                    <ol>
-                        {recipe.steps.map((step, index) => <li key={index}>{step}</li>)}
-                    </ol>
-                </div>
-            </div>
+            return displayRecipe();
         }
-
     }
+
     return (
         display()
     )
@@ -107,10 +178,14 @@ function App() {
         setRecipes(newRecipes);
     }
 
-    const updateRecipe = (index, recipe) => {
-        const newRecipes = [...recipes];
-        newRecipes.slice(index, 1);
+    const updateRecipe = recipe => {
+        const newRecipes = [...recipes].filter(element => recipe._id !== element._id);
         newRecipes.push(recipe);
+        setRecipes(newRecipes);
+    }
+
+    const deleteRecipe = recipe => {
+        const newRecipes = [...recipes].filter(element => recipe._id !== element._id);
         setRecipes(newRecipes);
     }
 
@@ -123,7 +198,9 @@ function App() {
                         key={index}
                         index={index}
                         recipe={recipe}
-                        updateRecipe={updateRecipe} />
+                        addRecipe={addRecipe}
+                        updateRecipe={updateRecipe}
+                        deleteRecipe={deleteRecipe} />
                 ))}
             </div>
         </div>
