@@ -211,7 +211,7 @@ function App() {
 
     return (
         <div className="container">
-            <h1>Simple recipes</h1>
+            <h1>{recipes.length} simple recipes</h1>
             <RecipeForm addRecipe={addRecipe} />
             <div className="grid">
                 {recipes.map((recipe, index) => (
