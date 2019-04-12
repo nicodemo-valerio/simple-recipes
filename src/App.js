@@ -69,6 +69,12 @@ function Recipe({ recipe, index, updateRecipe, deleteRecipe }) {
         updateRecipe(updatedRecipe);
     }
 
+    const onClickDelete = (recipe) => {
+        if (window.confirm(`Do you really want to delete ${recipe.recipe}?`)) {
+            deleteRecipe(recipe);
+        }
+    }
+
     const onChangeRecipe = e => {
         const updatedRecipe = recipe;
         updatedRecipe.recipe = e.target.value;
@@ -126,7 +132,7 @@ function Recipe({ recipe, index, updateRecipe, deleteRecipe }) {
             <div>
                 <h2>{recipe.recipe}</h2>
                 <button onClick={() => onClickEdit(recipe)}>Edit</button>
-                <button onClick={() => deleteRecipe(recipe)}>Delete</button>
+                <button onClick={() => onClickDelete(recipe)}>Delete</button>
             </div>
             <div>
                 <h3>Ingredients</h3>
