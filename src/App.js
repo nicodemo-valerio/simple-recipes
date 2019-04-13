@@ -20,34 +20,26 @@ function RecipeForm({ addRecipe }) {
 
     return (
         <form onSubmit={handleSubmit} className="formAddRecipe">
-            <div>
-                <label htmlFor="recipe">Recipe</label>
-                <input
-                    type="text"
-                    name="recipe"
-                    placeholder="Recipe name..."
-                    required
-                    pattern="[A-Za-z]*"
-                    maxLength="99" />
-            </div>
-            <div>
-                <label htmlFor="ingredients">Ingredients</label>
-                <textarea
-                    name="ingredients"
-                    placeholder="ingredient A, ingredient B, ingredient c, etc."
-                    required
-                    maxLength="999" />
-            </div>
-            <div>
-                <label htmlFor="steps">Steps</label>
-                <textarea
-                    name="steps"
-                    placeholder="step 1, step 2, step 3, etc."
-                    maxLength="999" />
-            </div>
-            <div>
-                <input type="submit" value="Insert" />
-            </div>
+            <label htmlFor="recipe">Recipe</label>
+            <input
+                type="text"
+                name="recipe"
+                placeholder="Recipe name..."
+                required
+                pattern="[A-Za-z0-9 '&()]+"
+                maxLength="99" />
+            <label htmlFor="ingredients">Ingredients</label>
+            <textarea
+                name="ingredients"
+                placeholder="ingredient A, ingredient B, ingredient c, etc."
+                required
+                maxLength="999" />
+            <label htmlFor="steps">Steps</label>
+            <textarea
+                name="steps"
+                placeholder="step 1, step 2, step 3, etc."
+                maxLength="999" />
+            <input type="submit" value="Insert" className="submit" />
         </form>
     )
 }
@@ -78,18 +70,21 @@ function Recipe({ recipe, index, updateRecipe, deleteRecipe }) {
     }
 
     const onChangeRecipe = e => {
+        e.preventDefault();
         const updatedRecipe = recipe;
         updatedRecipe.recipe = e.target.value;
         updateRecipe(updatedRecipe);
     }
 
     const onChangeIngredients = e => {
+        e.preventDefault();
         const updatedRecipe = recipe;
         updatedRecipe.ingredients = e.target.value.split(',');
         updateRecipe(updatedRecipe);
     }
 
     const onChangeSteps = e => {
+        e.preventDefault();
         const updatedRecipe = recipe;
         updatedRecipe.steps = e.target.value.split(',');
         updateRecipe(updatedRecipe);
@@ -120,7 +115,7 @@ function Recipe({ recipe, index, updateRecipe, deleteRecipe }) {
                     onChange={e => onChangeSteps(e)} />
             </div>
             <div>
-                <input type="submit" value="Update" />
+                <input type="submit" value="Update" className="submit" />
             </div>
         </form>
     }
@@ -174,7 +169,7 @@ function UploadRecipes({ uploadRecipes }) {
         <form onSubmit={(e) => onSubmit(e)}>
             <label htmlFor="number">Generate recipes</label>
             <input type="number" name="number" placeholder="Number of recipes..." required />
-            <input type="submit" value="Generate" />
+            <input type="submit" value="Generate" className="submit" />
         </form>
     )
 }
