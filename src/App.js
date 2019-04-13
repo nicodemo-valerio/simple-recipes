@@ -175,9 +175,9 @@ function UploadRecipes({ uploadRecipes }) {
 
     return (
         <form onSubmit={(e) => onSubmit(e)}>
-            <label htmlFor="number">Number of recipes</label>
-            <input type="text" name="number" placeholder="Number of recipes to generate..." />
-            <input type="submit" value="Upload" />
+            <label htmlFor="number">Generate recipes</label>
+            <input type="text" name="number" placeholder="Number of recipes..." />
+            <input type="submit" value="Generate" />
         </form>
     )
 }
