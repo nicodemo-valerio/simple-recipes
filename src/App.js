@@ -25,19 +25,25 @@ function RecipeForm({ addRecipe }) {
                 <input
                     type="text"
                     name="recipe"
-                    placeholder="Recipe name..." />
+                    placeholder="Recipe name..."
+                    required
+                    pattern="[A-Za-z]*"
+                    maxLength="99" />
             </div>
             <div>
                 <label htmlFor="ingredients">Ingredients</label>
                 <textarea
                     name="ingredients"
-                    placeholder="ingredient A, ingredient B, ingredient c, etc." />
+                    placeholder="ingredient A, ingredient B, ingredient c, etc."
+                    required
+                    maxLength="999" />
             </div>
             <div>
                 <label htmlFor="steps">Steps</label>
                 <textarea
                     name="steps"
-                    placeholder="step 1, step 2, step 3, etc." />
+                    placeholder="step 1, step 2, step 3, etc."
+                    maxLength="999" />
             </div>
             <div>
                 <input type="submit" value="Insert" />
@@ -167,7 +173,7 @@ function UploadRecipes({ uploadRecipes }) {
     return (
         <form onSubmit={(e) => onSubmit(e)}>
             <label htmlFor="number">Generate recipes</label>
-            <input type="text" name="number" placeholder="Number of recipes..." />
+            <input type="number" name="number" placeholder="Number of recipes..." required />
             <input type="submit" value="Generate" />
         </form>
     )
