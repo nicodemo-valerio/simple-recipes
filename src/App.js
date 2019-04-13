@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css'
 
-//const SERVER = 'http://localhost:5000/recipes/';
-const SERVER = 'https://nameless-temple-74743.herokuapp.com/recipes/';
+const SERVER = 'http://localhost:5000/recipes/';
+//const SERVER = 'https://nameless-temple-74743.herokuapp.com/recipes/';
 
 function RecipeForm({ addRecipe }) {
 
@@ -25,23 +25,19 @@ function RecipeForm({ addRecipe }) {
                 <input
                     type="text"
                     name="recipe"
-                    placeholder="The recipe name..." />
+                    placeholder="Recipe name..." />
             </div>
             <div>
                 <label htmlFor="ingredients">Ingredients</label>
-                <input
-                    type="text"
+                <textarea
                     name="ingredients"
-                    placeholder="Separate with a comma..."
-                    size="25" />
+                    placeholder="ingredient A, ingredient B, ingredient c, etc." />
             </div>
             <div>
                 <label htmlFor="steps">Steps</label>
-                <input
-                    type="text"
+                <textarea
                     name="steps"
-                    placeholder="Separate with a comma..."
-                    size="25" />
+                    placeholder="step 1, step 2, step 3, etc." />
             </div>
             <div>
                 <input type="submit" value="Insert" />
@@ -105,20 +101,16 @@ function Recipe({ recipe, index, updateRecipe, deleteRecipe }) {
             </div>
             <div>
                 <label htmlFor="ingredients">Ingredients</label>
-                <input
-                    type="text"
+                <textarea
                     name="ingredients"
                     value={recipe.ingredients}
-                    size="25"
                     onChange={e => onChangeIngredients(e)} />
             </div>
             <div>
                 <label htmlFor="steps">Steps</label>
-                <input
-                    type="text"
+                <textarea
                     name="steps"
                     value={recipe.steps}
-                    size="25"
                     onChange={e => onChangeSteps(e)} />
             </div>
             <div>
@@ -168,7 +160,6 @@ function UploadRecipes({ uploadRecipes }) {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        console.log(`on submit ${e.target.number.value}`)
         uploadRecipes(e.target.number.value);
         e.target.number.value = '';
     }
@@ -194,7 +185,6 @@ function App() {
         if (nameA > nameB) {
             return 1;
         }
-        console.log('equals');
         return 0;
     }
 
@@ -211,7 +201,8 @@ function App() {
     const addRecipe = (recipe) => {
         axios.post(SERVER, recipe)
             .then(res => {
-                setRecipes([...recipes, ...res.data].sort(sortByName));
+                const newRecipes = (Array.isArray(res.data)) ? res.data : [res.data];
+                setRecipes([...recipes, ...newRecipes].sort(sortByName));
             })
             .catch(err => console.log(err));
     }
